@@ -1,11 +1,11 @@
 import { getBaseUrl } from "@/helpers/config/envConfig";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { tagTypeList } from "../tagTypes/tagTypes";
-import axiosBaseQuery from "@/axios/axiosBaseQuery";
+import { axiosBaseQuery } from "@/axios/axiosBaseQuery";
+import { createApi } from "@reduxjs/toolkit/query/react";
 
 export const baseApi = createApi({
   reducerPath: "api",
-  baseQuery: axiosBaseQuery({ baseUrl: getBaseUrl() }),
+  baseQuery: axiosBaseQuery({ baseUrl: getBaseUrl() as string }),
   endpoints: () => ({}),
   tagTypes: tagTypeList,
 });
