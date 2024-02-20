@@ -8,30 +8,37 @@ import { useOnboardUserMutation } from "@/redux/api/authApi";
 import Avatar from "@/component/Avatar";
 import { useRouter } from "next/navigation";
 import { setNewUser, setUserInfo } from "@/redux/feature/user/userSlice";
+import { getBaseUrl } from "@/helpers/config/envConfig";
+import axios from "axios";
 
 const OnboardingPage = () => {
   const { image, userInfo } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
   const [onboardUser] = useOnboardUserMutation();
   const router = useRouter();
-  const onSubmit = async (data: any) => {
-    data.profilePhoto = image;
-    data.email = userInfo?.email;
+  const onSubmit = async (formData: any) => {
+    formData.profilePhoto = image;
+    formData.email = userInfo?.email;
     if (!image || !userInfo?.email) {
       message.error("please login first");
       return router.push("/login");
     }
     try {
-      const result: any = await onboardUser(data).unwrap();
-      if (result?.success) {
-        const { id, name, about, email, profilePhoto } = result?.data!;
-        message.success(result.message);
+      // const result: any = await onboardUser(data).unwrap();
+      const { data } = await axios.post(
+        `${getBaseUrl()}/auth/onboard-user`,
+        formData
+      );
+      console.log("onboarding data", data);
+      if (data?.success) {
+        const { id, name, about, email, profilePhoto } = data?.data!;
+        message.success(data.message);
         dispatch(setNewUser(false));
         dispatch(setUserInfo({ id, name, about, email, profilePhoto }));
         router.push("/");
       }
-    } catch (error) {
-      console.log("onboarding error: ", error);
+    } catch (error:any) {
+      console.log("onboarding error: ", error?.response?.data?.success);
       message.error("Something wrong about onboarding user");
     }
   };

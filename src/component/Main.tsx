@@ -9,6 +9,8 @@ import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { useCheckUserMutation } from "@/redux/api/authApi";
 import { setUserInfo } from "@/redux/feature/user/userSlice";
 import Chat from "./Chat/Chat";
+import axios from "axios";
+import { getBaseUrl } from "@/helpers/config/envConfig";
 
 const Main = () => {
   const router = useRouter();
@@ -28,16 +30,21 @@ const Main = () => {
 
       try {
         if (currentUser?.email && !userInfo) {
-          const response: any = await checkUser({
+          // const response: any = await checkUser({
+          //   email: currentUser?.email,
+          // }).unwrap();
+
+          const { data } = await axios.post(`${getBaseUrl()}/auth/check-user`, {
             email: currentUser?.email,
-          }).unwrap();
-          if (response?.data) {
-            const { id, name, about, email, profilePhoto } = response?.data;
+          });
+
+          if (data?.success) {
+            const { id, name, about, email, profilePhoto } = data?.data!;
             dispatch(setUserInfo({ id, name, about, email, profilePhoto }));
           }
         }
       } catch (error: any) {
-        if (!error?.success) {
+        if (!error?.response?.data?.success) {
           setRedirectToLogin(true);
         }
       }
