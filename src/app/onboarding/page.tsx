@@ -3,13 +3,15 @@ import Image from "next/image";
 import Form from "@/component/Form";
 import FormInput from "@/component/FormInput";
 import { Button, message } from "antd";
-import { useAppSelector } from "@/redux/hook";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { useOnboardUserMutation } from "@/redux/api/authApi";
 import Avatar from "@/component/Avatar";
 import { useRouter } from "next/navigation";
+import { setNewUser, setUserInfo } from "@/redux/feature/user/userSlice";
 
 const OnboardingPage = () => {
   const { image, userInfo } = useAppSelector((state) => state.user);
+  const dispatch = useAppDispatch();
   const [onboardUser] = useOnboardUserMutation();
   const router = useRouter();
   const onSubmit = async (data: any) => {
@@ -22,11 +24,14 @@ const OnboardingPage = () => {
     try {
       const result: any = await onboardUser(data).unwrap();
       if (result?.success) {
+        const { id, name, about, email, profilePhoto } = result?.data!;
         message.success(result.message);
+        dispatch(setNewUser(false));
+        dispatch(setUserInfo({ id, name, about, email, profilePhoto }));
         router.push("/");
       }
     } catch (error) {
-      console.log("onboarding error: ",error)
+      console.log("onboarding error: ", error);
       message.error("Something wrong about onboarding user");
     }
   };

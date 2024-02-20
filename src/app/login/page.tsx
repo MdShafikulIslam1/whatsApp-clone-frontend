@@ -17,13 +17,19 @@ const LoginPage = () => {
   const handleLogin = async () => {
     setIsLoading(true);
     const googleProvider = new GoogleAuthProvider();
-    const {
-      user: { displayName: name, email, photoURL: profilePhoto },
-    } = await signInWithPopup(firebaseAuth, googleProvider);
-    try {
-      if (email) {
-        const response: any = await checkUser({ email });
-        if (!response?.error?.success) {
+    const { user } = await signInWithPopup(firebaseAuth, googleProvider);
+
+    if (user) {
+      const { displayName: name, email, photoURL: profilePhoto } = user;
+      try {
+        const response: any = await checkUser({ email }).unwrap();
+        if (response?.success) {
+          const { id, name, about, email, profilePhoto } = response?.data!;
+          dispatch(setUserInfo({ id, name, about, email, profilePhoto }));
+          router.push("/");
+        }
+      } catch (error: any) {
+        if (!error?.success) {
           dispatch(setNewUser(true));
           dispatch(
             setUserInfo({
@@ -34,13 +40,9 @@ const LoginPage = () => {
             })
           );
           router.push("/onboarding");
-        } else {
-          const { id, name, about, email, profilePhoto } = response?.data?.data;
-          dispatch(setUserInfo({ id, name, about, email, profilePhoto }));
-          router.push("/");
         }
       }
-    } catch (error) {}
+    }
   };
   return (
     <div className="flex flex-col items-center justify-center w-screen h-screen gap-6 bg-panel-header-background">
