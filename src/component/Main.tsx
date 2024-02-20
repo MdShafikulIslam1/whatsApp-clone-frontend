@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { useCheckUserMutation } from "@/redux/api/authApi";
 import { setUserInfo } from "@/redux/feature/user/userSlice";
+import Chat from "./Chat/Chat";
 
 const Main = () => {
   const router = useRouter();
@@ -35,7 +36,7 @@ const Main = () => {
             dispatch(setUserInfo({ id, name, about, email, profilePhoto }));
           }
         }
-      } catch (error:any) {
+      } catch (error: any) {
         if (!error?.success) {
           setRedirectToLogin(true);
         }
@@ -46,10 +47,8 @@ const Main = () => {
     <>
       <div className="grid grid-cols-main w-screen h-screen max-h-screen overflow-hidden">
         <ChatList />
-        <Empty />
-        <p style={{ fontSize: "40px" }} className="text-orange-700 text-5xl">
-          wow
-        </p>
+        {/* <Empty /> */}
+        <Chat />
       </div>
     </>
   );
