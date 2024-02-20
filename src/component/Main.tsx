@@ -15,7 +15,9 @@ import { getBaseUrl } from "@/helpers/config/envConfig";
 const Main = () => {
   const router = useRouter();
   const [redirectToLogin, setRedirectToLogin] = useState(false);
-  const userInfo = useAppSelector((state) => state.user.userInfo);
+  const { userInfo, currentChatUserInfo } = useAppSelector(
+    (state) => state.user
+  );
   const dispatch = useAppDispatch();
 
   const [checkUser] = useCheckUserMutation();
@@ -54,8 +56,7 @@ const Main = () => {
     <>
       <div className="grid grid-cols-main w-screen h-screen max-h-screen overflow-hidden">
         <ChatList />
-        {/* <Empty /> */}
-        <Chat />
+        {currentChatUserInfo?.id ? <Chat /> : <Empty />}
       </div>
     </>
   );

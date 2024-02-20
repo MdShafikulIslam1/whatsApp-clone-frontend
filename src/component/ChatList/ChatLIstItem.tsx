@@ -1,12 +1,25 @@
-"use client"
+"use client";
 import React from "react";
 
 import { FaCamera, FaMicrophone } from "react-icons/fa";
 import Avatar from "../Avatar";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import {
+  setContactPage,
+  setCurrentChatUserInfo,
+} from "@/redux/feature/user/userSlice";
 
 function ChatLIstItem({ data, isContactPage = false }: any) {
+  console.log("chat list item", data);
+  const currentChatUserInfo = useAppSelector(
+    (state) => state?.user?.currentChatUserInfo
+  );
+  const dispatch = useAppDispatch();
+
   const handleContactClick = () => {
-    alert("todo");
+    dispatch(setCurrentChatUserInfo({ ...data }));
+    dispatch(setContactPage());
+
     // if (!isContactPage) {
     //   dispatch({
     //     type: actionCases.CHANGE_CURRENT_CHAT_USER,

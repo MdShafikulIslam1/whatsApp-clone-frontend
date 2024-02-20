@@ -26,7 +26,7 @@ const ChatList = () => {
         </>
       )}
 
-      {pageType === "all-contacts" && <ContactsList />}
+      {pageType === "all-contacts" && <ContactsList/>}
     </div>
   );
 };

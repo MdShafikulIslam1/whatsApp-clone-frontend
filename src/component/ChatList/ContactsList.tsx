@@ -12,6 +12,7 @@ const ContactsList = () => {
   const [allContacts, setAllContacts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchContacts, setSearchContacts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (searchTerm.length) {
@@ -28,6 +29,7 @@ const ContactsList = () => {
   }, [searchTerm, allContacts]);
 
   useEffect(() => {
+    setIsLoading(true);
     const getAllUsers = async () => {
       try {
         const { data } = await axios.get(`${getBaseUrl()}/auth/all-user`);
@@ -35,12 +37,14 @@ const ContactsList = () => {
 
         setAllContacts(data?.data);
         setSearchContacts(data?.data);
+        setIsLoading(false);
       } catch (error) {
         console.log(error);
       }
     };
     getAllUsers();
   }, []);
+
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-end h-24 px-3 py-5">

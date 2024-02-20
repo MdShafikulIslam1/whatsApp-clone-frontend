@@ -12,6 +12,13 @@ export interface IUser {
     profilePhoto: string | null;
     about: string | null;
   } | null;
+  currentChatUserInfo: {
+    id?: string | null;
+    name: string | null;
+    email: string | null;
+    profilePhoto: string | null;
+    about: string | null;
+  } | null;
 }
 
 const initialState: IUser = {
@@ -19,6 +26,7 @@ const initialState: IUser = {
   image: "/default_avatar.png",
   newUser: false,
   userInfo: null,
+  currentChatUserInfo: null,
 };
 
 export const userSlice = createSlice({
@@ -46,11 +54,28 @@ export const userSlice = createSlice({
     ) => {
       state.userInfo = action.payload;
     },
+    setCurrentChatUserInfo: (
+      state,
+      action: PayloadAction<{
+        id?: string | null;
+        name: string | null;
+        email: string | null;
+        profilePhoto: string | null;
+        about: string | null;
+      }>
+    ) => {
+      state.currentChatUserInfo = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setImage, setNewUser, setUserInfo, setContactPage } =
-  userSlice.actions;
+export const {
+  setImage,
+  setNewUser,
+  setUserInfo,
+  setContactPage,
+  setCurrentChatUserInfo,
+} = userSlice.actions;
 
 export default userSlice.reducer;

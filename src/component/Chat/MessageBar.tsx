@@ -1,8 +1,15 @@
+"use client";
+import { useState } from "react";
 import { BsEmojiSmile } from "react-icons/bs";
 import { ImAttachment } from "react-icons/im";
 import { MdSend } from "react-icons/md";
 
 const MessageBar = () => {
+  const [message, setMessage] = useState("");
+
+  const sendMessageHandler = () => {
+    alert("message received")
+  };
   return (
     <div className="relative flex items-center h-20 gap-6 px-4 bg-panel-header-background">
       <>
@@ -23,6 +30,8 @@ const MessageBar = () => {
             type="text"
             placeholder="Type a message"
             className="w-full h-10 px-5 text-sm text-white rounded-lg bg-input-background focus:outline-none"
+            onChange={(e) => setMessage(e.target.value)}
+            value={message}
           />
         </div>
 
@@ -31,6 +40,7 @@ const MessageBar = () => {
             <MdSend
               className="text-xl cursor-pointer text-panel-header-icon"
               title="Send Message"
+              onClick={sendMessageHandler}
             />
           </button>
         </div>
