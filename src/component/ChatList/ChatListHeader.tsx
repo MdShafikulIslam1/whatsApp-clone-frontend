@@ -5,9 +5,11 @@ import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import Avatar from "../Avatar";
 import ContextMenu from "../ContextMenu";
 import { useRouter } from "next/navigation";
+import { setContactPage } from "@/redux/feature/user/userSlice";
 function ChatListHeader() {
-  const {userInfo} = useAppSelector(state => state.user);
-  const dispatch = useAppDispatch()
+  const {userInfo,contactPage} = useAppSelector((state) => state.user);
+  console.log("contact",contactPage);
+  const dispatch = useAppDispatch();
   const router = useRouter();
 
   const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
@@ -16,7 +18,7 @@ function ChatListHeader() {
     y: 0,
   });
 
-  const showContextMenu = (e:any) => {
+  const showContextMenu = (e: any) => {
     e.preventDefault();
     setIsContextMenuVisible(true);
     setContextMenuCoordinates({ x: e.pageX, y: e.pageY });
@@ -32,10 +34,6 @@ function ChatListHeader() {
     },
   ];
 
-  const handleAllContactPage = () => {
-    alert("need to implement all contact page state change")
-  };
-
   return (
     <div className="flex items-center justify-between h-16 px-3 py-3">
       <div className="cursor-pointer">
@@ -45,7 +43,7 @@ function ChatListHeader() {
         <BsFillChatLeftTextFill
           className="text-xl cursor-pointer text-panel-header-icon"
           title="New Chat"
-          onClick={handleAllContactPage}
+          onClick={() => dispatch(setContactPage())}
         />
 
         <>
@@ -70,4 +68,3 @@ function ChatListHeader() {
 }
 
 export default ChatListHeader;
-

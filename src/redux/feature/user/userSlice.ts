@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 export interface IUser {
+  contactPage: boolean;
   image: string;
   newUser: boolean;
   userInfo: {
@@ -14,6 +15,7 @@ export interface IUser {
 }
 
 const initialState: IUser = {
+  contactPage: false,
   image: "/default_avatar.png",
   newUser: false,
   userInfo: null,
@@ -23,6 +25,9 @@ export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
+    setContactPage: (state) => {
+      state.contactPage = !state.contactPage;
+    },
     setImage: (state, action: PayloadAction<string>) => {
       state.image = action.payload;
     },
@@ -45,6 +50,7 @@ export const userSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { setImage, setNewUser, setUserInfo } = userSlice.actions;
+export const { setImage, setNewUser, setUserInfo, setContactPage } =
+  userSlice.actions;
 
 export default userSlice.reducer;
