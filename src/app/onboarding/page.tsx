@@ -26,6 +26,7 @@ const OnboardingPage = () => {
         router.push("/");
       }
     } catch (error) {
+      console.log("onboarding error: ",error)
       message.error("Something wrong about onboarding user");
     }
   };
