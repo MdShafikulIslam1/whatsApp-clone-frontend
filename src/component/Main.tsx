@@ -52,6 +52,24 @@ const Main = () => {
       }
     });
   }, [checkUser, userInfo, dispatch]);
+
+  useEffect(() => {
+    try {
+      const getAllMessages = async () => {
+        const { data } = await axios.get(
+          `${getBaseUrl()}/messages/${userInfo?.id}/${currentChatUserInfo?.id}`
+        );
+        console.log("all messages", data);
+        // dispatch({ type: actionCases.SET_MESSAGES, messages });
+      };
+      if (currentChatUserInfo?.id) {
+        getAllMessages();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [currentChatUserInfo, userInfo]);
+
   return (
     <>
       <div className="grid grid-cols-main w-screen h-screen max-h-screen overflow-hidden">
