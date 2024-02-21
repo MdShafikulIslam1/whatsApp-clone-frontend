@@ -1,14 +1,30 @@
 "use client";
+import { getBaseUrl } from "@/helpers/config/envConfig";
+import { useAppSelector } from "@/redux/hook";
+import axios from "axios";
 import { useState } from "react";
 import { BsEmojiSmile } from "react-icons/bs";
 import { ImAttachment } from "react-icons/im";
 import { MdSend } from "react-icons/md";
 
 const MessageBar = () => {
+  const { currentChatUserInfo, userInfo } = useAppSelector(
+    (state) => state.user
+  );
   const [message, setMessage] = useState("");
 
-  const sendMessageHandler = () => {
-    alert("message received")
+  const sendMessageHandler = async () => {
+    try {
+      const { data } = await axios.post(
+        `${getBaseUrl()}/messages/add-message`,
+        {
+          to: currentChatUserInfo?.id,
+          from: userInfo?.id,
+          message,
+        }
+      );
+      console.log("send message", data);
+    } catch (error) {}
   };
   return (
     <div className="relative flex items-center h-20 gap-6 px-4 bg-panel-header-background">
