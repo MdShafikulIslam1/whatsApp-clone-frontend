@@ -10,6 +10,7 @@ import { useCheckUserMutation } from "@/redux/api/authApi";
 import {
   setMessage,
   setSocket,
+  setSocketMessage,
   setUserInfo,
 } from "@/redux/feature/user/userSlice";
 import Chat from "./Chat/Chat";
@@ -20,6 +21,7 @@ const Main = () => {
   const router = useRouter();
   const socket = useRef<Socket | null>(null);
   const [redirectToLogin, setRedirectToLogin] = useState(false);
+  const [socketEvent, setSocketEvent] = useState(false);
   const { userInfo, currentChatUserInfo } = useAppSelector(
     (state: any) => state.user
   );
@@ -70,6 +72,16 @@ const Main = () => {
       socket.current = newSocket;
     }
   }, [userInfo, dispatch]);
+
+  useEffect(() => {
+    if (socket.current && !socketEvent) {
+      socket.current.on("received-message", (data) => {
+        dispatch(setSocketMessage(data));
+      });
+
+      setSocketEvent(true);
+    }
+  }, [dispatch, socketEvent]);
 
   return (
     <>

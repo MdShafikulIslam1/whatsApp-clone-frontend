@@ -13,6 +13,7 @@ interface IMessage {
   updatedAt?: string;
 }
 export interface IUser {
+  socketMessage?: unknown;
   socket: Socket | null;
   messages: IMessage[];
   contactPage: boolean;
@@ -35,6 +36,7 @@ export interface IUser {
 }
 
 const initialState: IUser = {
+  socketMessage: null,
   socket: null,
   messages: [],
   contactPage: false,
@@ -87,6 +89,9 @@ export const userSlice = createSlice({
     setSocket: (state, action: PayloadAction<any>) => {
       state.socket = action.payload;
     },
+    setSocketMessage: (state, action: PayloadAction<any>) => {
+      state.socketMessage = action.payload;
+    },
   },
 });
 
@@ -99,6 +104,7 @@ export const {
   setCurrentChatUserInfo,
   setMessage,
   setSocket,
+  setSocketMessage,
 } = userSlice.actions;
 
 export default userSlice.reducer;
