@@ -4,23 +4,36 @@ import ChatList from "./ChatList/ChatList";
 import Empty from "./Empty";
 import { firebaseAuth } from "@/utils/firebaseConfig";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { useCheckUserMutation } from "@/redux/api/authApi";
-import { setMessage, setUserInfo } from "@/redux/feature/user/userSlice";
+import {
+  setMessage,
+  setSocket,
+  setUserInfo,
+} from "@/redux/feature/user/userSlice";
 import Chat from "./Chat/Chat";
-import axios from "axios";
-import { getBaseUrl } from "@/helpers/config/envConfig";
+import { useGetAllMessageQuery } from "@/redux/api/messageApi";
+import { Socket, io } from "socket.io-client";
 
 const Main = () => {
   const router = useRouter();
+  const socket = useRef<Socket | null>(null);
   const [redirectToLogin, setRedirectToLogin] = useState(false);
   const { userInfo, currentChatUserInfo } = useAppSelector(
-    (state) => state.user
+    (state: any) => state.user
   );
   const dispatch = useAppDispatch();
 
   const [checkUser] = useCheckUserMutation();
+  const { data } = useGetAllMessageQuery({
+    from: userInfo?.id,
+    to: currentChatUserInfo?.id,
+  });
+
+  if ((data as any)?.success) {
+    dispatch(setMessage((data as any)?.data));
+  }
 
   useEffect(() => {
     if (redirectToLogin) router.push("/login");
@@ -32,13 +45,9 @@ const Main = () => {
 
       try {
         if (currentUser?.email && !userInfo) {
-          // const response: any = await checkUser({
-          //   email: currentUser?.email,
-          // }).unwrap();
-
-          const { data } = await axios.post(`${getBaseUrl()}/auth/check-user`, {
+          const data: any = await checkUser({
             email: currentUser?.email,
-          });
+          }).unwrap();
 
           if (data?.success) {
             const { id, name, about, email, profilePhoto } = data?.data!;
@@ -54,21 +63,13 @@ const Main = () => {
   }, [checkUser, userInfo, dispatch]);
 
   useEffect(() => {
-    try {
-      const getAllMessages = async () => {
-        const { data } = await axios.get(
-          `${getBaseUrl()}/messages/${userInfo?.id}/${currentChatUserInfo?.id}`
-        );
-        data?.data?.map((message: any) => dispatch(setMessage(message)));
-      };
-
-      if (currentChatUserInfo?.id) {
-        getAllMessages();
-      }
-    } catch (error) {
-      console.log(error);
+    if (userInfo && !socket.current) {
+      const newSocket = io("http://localhost:5000");
+      newSocket.emit("add-user", userInfo.id);
+      dispatch(setSocket(newSocket));
+      socket.current = newSocket;
     }
-  }, [currentChatUserInfo, userInfo, dispatch]);
+  }, [userInfo, dispatch]);
 
   return (
     <>

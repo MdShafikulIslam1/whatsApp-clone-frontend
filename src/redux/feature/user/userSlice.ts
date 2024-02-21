@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import { Socket } from "socket.io-client";
 
 interface IMessage {
   createdAt?: string;
@@ -12,6 +13,7 @@ interface IMessage {
   updatedAt?: string;
 }
 export interface IUser {
+  socket: Socket | null;
   messages: IMessage[];
   contactPage: boolean;
   image: string;
@@ -33,6 +35,7 @@ export interface IUser {
 }
 
 const initialState: IUser = {
+  socket: null,
   messages: [],
   contactPage: false,
   image: "/default_avatar.png",
@@ -78,8 +81,11 @@ export const userSlice = createSlice({
     ) => {
       state.currentChatUserInfo = action.payload;
     },
-    setMessage: (state, action: PayloadAction<IMessage>) => {
-      state.messages.push(action.payload);
+    setMessage: (state, action: PayloadAction<IMessage[]>) => {
+      state.messages = action.payload;
+    },
+    setSocket: (state, action: PayloadAction<any>) => {
+      state.socket = action.payload;
     },
   },
 });
@@ -92,6 +98,7 @@ export const {
   setContactPage,
   setCurrentChatUserInfo,
   setMessage,
+  setSocket,
 } = userSlice.actions;
 
 export default userSlice.reducer;
