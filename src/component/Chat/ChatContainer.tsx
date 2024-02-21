@@ -4,10 +4,8 @@ import React from "react";
 import MessageStatus from "../MessageStatus";
 
 function ChatContainer() {
-  const { userInfo, currentChatUserInfo, messages } = useAppSelector(
-    (state) => state.user
-  );
-  console.log("messages: ", messages);
+  const { userInfo, currentChatUserInfo, messages, socketMessage } =
+    useAppSelector((state) => state.user);
 
   return (
     <div className="h-[80vh] w-full flex-grow relative overflow-auto custom-scrollbar">

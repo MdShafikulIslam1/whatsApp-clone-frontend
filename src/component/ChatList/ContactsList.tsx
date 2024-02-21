@@ -33,8 +33,7 @@ const ContactsList = () => {
     const getAllUsers = async () => {
       try {
         const { data } = await axios.get(`${getBaseUrl()}/auth/all-user`);
-        console.log("user data", data);
-
+      
         setAllContacts(data?.data);
         setSearchContacts(data?.data);
         setIsLoading(false);

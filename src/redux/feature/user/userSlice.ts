@@ -14,7 +14,7 @@ interface IMessage {
 }
 export interface IUser {
   socketMessage?: unknown;
-  socket: Socket | null;
+  socket: unknown | any;
   messages: IMessage[];
   contactPage: boolean;
   image: string;

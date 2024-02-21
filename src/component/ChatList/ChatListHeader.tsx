@@ -8,8 +8,7 @@ import { useRouter } from "next/navigation";
 import { setContactPage } from "@/redux/feature/user/userSlice";
 function ChatListHeader() {
   const {userInfo,contactPage} = useAppSelector((state) => state.user);
-  console.log("contact",contactPage);
-  const dispatch = useAppDispatch();
+   const dispatch = useAppDispatch();
   const router = useRouter();
 
   const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);

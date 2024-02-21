@@ -10,7 +10,6 @@ import {
 } from "@/redux/feature/user/userSlice";
 
 function ChatLIstItem({ data, isContactPage = false }: any) {
-  console.log("chat list item", data);
   const currentChatUserInfo = useAppSelector(
     (state) => state?.user?.currentChatUserInfo
   );

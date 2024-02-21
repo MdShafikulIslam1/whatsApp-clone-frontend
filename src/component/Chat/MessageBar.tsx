@@ -7,7 +7,7 @@ import { ImAttachment } from "react-icons/im";
 import { MdSend } from "react-icons/md";
 
 const MessageBar = () => {
-  const { currentChatUserInfo, userInfo } = useAppSelector(
+  const { currentChatUserInfo, userInfo, socket } = useAppSelector(
     (state) => state.user
   );
   const [message, setMessage] = useState("");
@@ -15,10 +15,15 @@ const MessageBar = () => {
 
   const sendMessageHandler = async () => {
     try {
-      const data = await addMessage({
+      const data: any = await addMessage({
         to: currentChatUserInfo?.id,
         from: userInfo?.id,
         message,
+      });
+      socket?.emit("send-message", {
+        to: currentChatUserInfo?.id,
+        from: userInfo?.id,
+        message: data?.data?.data?.message,
       });
       setMessage("");
     } catch (error) {}

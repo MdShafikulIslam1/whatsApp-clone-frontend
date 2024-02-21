@@ -74,14 +74,13 @@ const Main = () => {
   }, [userInfo, dispatch]);
 
   useEffect(() => {
-    if (socket.current && !socketEvent) {
-      socket.current.on("received-message", (data) => {
-        dispatch(setSocketMessage(data));
+    if (socket.current) {
+      socket.current.on("received-message", (data: any) => {
+        console.log("the data comes from the socket", data);
+        // Dispatch action to handle received message
       });
-
-      setSocketEvent(true);
     }
-  }, [dispatch, socketEvent]);
+  }, []);
 
   return (
     <>
