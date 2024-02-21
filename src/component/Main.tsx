@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { useCheckUserMutation } from "@/redux/api/authApi";
-import { setUserInfo } from "@/redux/feature/user/userSlice";
+import { setMessage, setUserInfo } from "@/redux/feature/user/userSlice";
 import Chat from "./Chat/Chat";
 import axios from "axios";
 import { getBaseUrl } from "@/helpers/config/envConfig";
@@ -59,16 +59,16 @@ const Main = () => {
         const { data } = await axios.get(
           `${getBaseUrl()}/messages/${userInfo?.id}/${currentChatUserInfo?.id}`
         );
-        console.log("all messages", data);
-        // dispatch({ type: actionCases.SET_MESSAGES, messages });
+        data?.data?.map((message: any) => dispatch(setMessage(message)));
       };
+
       if (currentChatUserInfo?.id) {
         getAllMessages();
       }
     } catch (error) {
       console.log(error);
     }
-  }, [currentChatUserInfo, userInfo]);
+  }, [currentChatUserInfo, userInfo, dispatch]);
 
   return (
     <>

@@ -1,7 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
+interface IMessage {
+  createdAt?: string;
+  id?: string;
+  message?: string;
+  messageStatus?: string;
+  receiverId?: string;
+  senderId?: string;
+  type?: string;
+  updatedAt?: string;
+}
 export interface IUser {
+  messages: IMessage[];
   contactPage: boolean;
   image: string;
   newUser: boolean;
@@ -22,6 +33,7 @@ export interface IUser {
 }
 
 const initialState: IUser = {
+  messages: [],
   contactPage: false,
   image: "/default_avatar.png",
   newUser: false,
@@ -66,6 +78,9 @@ export const userSlice = createSlice({
     ) => {
       state.currentChatUserInfo = action.payload;
     },
+    setMessage: (state, action: PayloadAction<IMessage>) => {
+      state.messages.push(action.payload);
+    },
   },
 });
 
@@ -76,6 +91,7 @@ export const {
   setUserInfo,
   setContactPage,
   setCurrentChatUserInfo,
+  setMessage,
 } = userSlice.actions;
 
 export default userSlice.reducer;
