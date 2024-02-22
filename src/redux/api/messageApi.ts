@@ -20,7 +20,21 @@ const messageApi = baseApi.injectEndpoints({
       },
       providesTags: [tagTypes.MESSAGE],
     }),
+
+    getInitialContactsWithMessages: build.query({
+      query: (from: string) => {
+        return {
+          url: `/messages/getInitialContacts/${from}`,
+          method: "GET",
+        };
+      },
+      providesTags: [tagTypes.MESSAGE],
+    }),
   }),
 });
 
-export const { useAddMessageMutation, useGetAllMessageQuery } = messageApi;
+export const {
+  useAddMessageMutation,
+  useGetAllMessageQuery,
+  useGetInitialContactsWithMessagesQuery,
+} = messageApi;
