@@ -10,20 +10,23 @@ import { useGetAllUserQuery } from "@/redux/api/authApi";
 
 const ContactsList = () => {
   const dispatch = useAppDispatch();
-  const [allContacts, setAllContacts] = useState([]);
+  const [allContacts, setAllContacts] = useState<any[]>([]);
+  const [searchContacts, setSearchContacts] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchContacts, setSearchContacts] = useState([]);
   const { data, isLoading } = useGetAllUserQuery({});
 
-  // if (!isLoading) {
-  //   setAllContacts((data as any)?.data);
-  // }
+  useEffect(() => {
+    if (!isLoading) {
+      setAllContacts((data as any)?.data);
+      setSearchContacts((data as any)?.data);
+    }
+  }, [isLoading, data]);
 
   useEffect(() => {
     if (searchTerm.length) {
       const filterData: any = {};
-      Object.keys(allContacts).forEach((key) => {
-        filterData[key] = allContacts[key].filter((obj) =>
+      Object.keys(allContacts).forEach((key: any) => {
+        filterData[key] = allContacts[key].filter((obj: any) =>
           obj.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
       });
@@ -63,7 +66,7 @@ const ContactsList = () => {
       </div>
       {!isLoading &&
         (data as any)?.data &&
-        Object.entries((data as any)?.data as Record<string, any>).map(
+        Object.entries(searchContacts as Record<string, any>).map(
           ([initialLetter, userList]) => {
             return (
               (userList as [])?.length > 0 && (
