@@ -6,13 +6,23 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BiArrowBack, BiSearchAlt2 } from "react-icons/bi";
 import ChatLIstItem from "./ChatLIstItem";
+import { useGetAllUserQuery } from "@/redux/api/authApi";
 
 const ContactsList = () => {
   const dispatch = useAppDispatch();
   const [allContacts, setAllContacts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchContacts, setSearchContacts] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const { data, isLoading } = useGetAllUserQuery({});
+
+  if (!isLoading) {
+    // setAllContacts((data as any)?.data);
+
+    Object.entries((data as any)?.data).map(([initialLetter, userList]) => {
+      console.log("initialLetter", initialLetter);
+      console.log("userList", userList);
+    });
+  }
 
   useEffect(() => {
     if (searchTerm.length) {
@@ -27,23 +37,6 @@ const ContactsList = () => {
       setSearchContacts(allContacts);
     }
   }, [searchTerm, allContacts]);
-
-  useEffect(() => {
-    setIsLoading(true);
-    const getAllUsers = async () => {
-      try {
-        const { data } = await axios.get(`${getBaseUrl()}/auth/all-user`);
-        console.log("user data", data);
-
-        setAllContacts(data?.data);
-        setSearchContacts(data?.data);
-        setIsLoading(false);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getAllUsers();
-  }, []);
 
   return (
     <div className="flex flex-col h-full">
@@ -73,25 +66,29 @@ const ContactsList = () => {
           </div>
         </div>
       </div>
-      {Object.entries(searchContacts).map(([initialLetter, userList]) => {
-        return (
-          (userList as [])?.length > 0 && (
-            <div key={Date.now() + initialLetter}>
-              <div className="py-5 pl-10 text-teal-light">{initialLetter}</div>
+      {!isLoading &&
+        (data as any)?.data &&
+        Object.entries((data as any)?.data).map(([initialLetter, userList]) => {
+          return (
+            (userList as [])?.length > 0 && (
+              <div key={Date.now() + initialLetter}>
+                <div className="py-5 pl-10 text-teal-light">
+                  {initialLetter}
+                </div>
 
-              {(userList as [])?.map((user: any) => {
-                return (
-                  <ChatLIstItem
-                    key={user?.id}
-                    data={user}
-                    isContactPage={true}
-                  />
-                );
-              })}
-            </div>
-          )
-        );
-      })}
+                {(userList as [])?.map((user: any) => {
+                  return (
+                    <ChatLIstItem
+                      key={user?.id}
+                      data={user}
+                      isContactPage={true}
+                    />
+                  );
+                })}
+              </div>
+            )
+          );
+        })}
     </div>
   );
 };

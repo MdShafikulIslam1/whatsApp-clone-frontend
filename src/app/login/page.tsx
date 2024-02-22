@@ -1,10 +1,8 @@
 "use client";
-import { getBaseUrl } from "@/helpers/config/envConfig";
 import { useCheckUserMutation } from "@/redux/api/authApi";
 import { setNewUser, setUserInfo } from "@/redux/feature/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { firebaseAuth } from "@/utils/firebaseConfig";
-import axios from "axios";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -24,19 +22,17 @@ const LoginPage = () => {
     if (user) {
       const { displayName: name, email, photoURL: profilePhoto } = user;
       try {
-        // const response: any = await checkUser({ email }).unwrap();
-        const { data } = await axios.post(`${getBaseUrl()}/auth/check-user`, {
-          email,
-        });
-        
+        const data: any = await checkUser({ email }).unwrap();
+        console.log("check user data", data);
         if (data?.success) {
           const { id, name, about, email, profilePhoto } = data?.data!;
           dispatch(setUserInfo({ id, name, about, email, profilePhoto }));
           router.push("/");
         }
       } catch (error: any) {
+        console.log("check user error", error);
         if (!error?.response?.data?.success) {
-          alert("error")
+          console.log("object not found", error)
           dispatch(setNewUser(true));
           dispatch(
             setUserInfo({

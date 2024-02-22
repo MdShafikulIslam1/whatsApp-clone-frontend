@@ -1,5 +1,6 @@
 "use client";
 import { getBaseUrl } from "@/helpers/config/envConfig";
+import { useAddMessageMutation } from "@/redux/api/messageApi";
 import { useAppSelector } from "@/redux/hook";
 import axios from "axios";
 import { useState } from "react";
@@ -11,19 +12,20 @@ const MessageBar = () => {
   const { currentChatUserInfo, userInfo } = useAppSelector(
     (state) => state.user
   );
+  const [addMessage] = useAddMessageMutation();
   const [message, setMessage] = useState("");
+
 
   const sendMessageHandler = async () => {
     try {
-      const { data } = await axios.post(
-        `${getBaseUrl()}/messages/add-message`,
-        {
-          to: currentChatUserInfo?.id,
-          from: userInfo?.id,
-          message,
-        }
-      );
-      console.log("send message", data);
+      const data: any = await addMessage({
+        to: currentChatUserInfo?.id,
+        from: userInfo?.id,
+        message,
+      });
+
+      setMessage("")
+     
     } catch (error) {}
   };
   return (

@@ -78,8 +78,8 @@ export const userSlice = createSlice({
     ) => {
       state.currentChatUserInfo = action.payload;
     },
-    setMessage: (state, action: PayloadAction<IMessage>) => {
-      state.messages.push(action.payload);
+    setMessage: (state, action: PayloadAction<IMessage[]>) => {
+      state.messages = action.payload;
     },
   },
 });
