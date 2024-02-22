@@ -45,9 +45,9 @@ function ContextMenu({
           <li
             key={"1"}
             onClick={(e) => handleClick(e, callback)}
-            className="px-5 py-2 cursor-pointer hover:bg-gray-400 hover:tracking-widest"
+            className="px-5 py-2 cursor-pointer bg-gray-300 hover:bg-gray-400 hover:tracking-widest"
           >
-            <span className="z-50 text-white">{name}</span>
+            <span className="z-[999]">{name}</span>
           </li>
         ))}
       </ul>

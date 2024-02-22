@@ -98,6 +98,9 @@ export const userSlice = createSlice({
         user?.name?.toLowerCase().includes(action.payload.toLowerCase())
       );
     },
+    setExitChat: (state) => {
+      state.currentChatUserInfo = null;
+    },
   },
 });
 
@@ -112,6 +115,7 @@ export const {
   setMessageSearch,
   setAllUsers,
   setFilteredUsers,
+  setExitChat,
 } = userSlice.actions;
 
 export default userSlice.reducer;
