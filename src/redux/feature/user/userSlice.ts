@@ -12,6 +12,8 @@ export interface IMessage {
   updatedAt?: string;
 }
 export interface IUser {
+  allUsers?: Array<{}>;
+  filteredUsers?: Array<{}>;
   messageSearch: boolean;
   messages: IMessage[];
   contactPage: boolean;
@@ -34,6 +36,8 @@ export interface IUser {
 }
 
 const initialState: IUser = {
+  allUsers: [],
+  filteredUsers: [],
   messageSearch: false,
   messages: [],
   contactPage: false,
@@ -86,6 +90,14 @@ export const userSlice = createSlice({
     setMessageSearch: (state) => {
       state.messageSearch = !state.messageSearch;
     },
+    setAllUsers: (state, action: PayloadAction<any>) => {
+      state.allUsers = action.payload;
+    },
+    setFilteredUsers: (state, action: PayloadAction<any>) => {
+      state.filteredUsers = state.allUsers?.filter((user: any) =>
+        user?.name?.toLowerCase().includes(action.payload.toLowerCase())
+      );
+    },
   },
 });
 
@@ -98,6 +110,8 @@ export const {
   setCurrentChatUserInfo,
   setMessage,
   setMessageSearch,
+  setAllUsers,
+  setFilteredUsers,
 } = userSlice.actions;
 
 export default userSlice.reducer;

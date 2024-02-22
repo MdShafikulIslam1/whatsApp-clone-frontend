@@ -1,7 +1,7 @@
 "use client";
 import { getBaseUrl } from "@/helpers/config/envConfig";
-import { setContactPage } from "@/redux/feature/user/userSlice";
-import { useAppDispatch } from "@/redux/hook";
+import { setAllUsers, setContactPage } from "@/redux/feature/user/userSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BiArrowBack, BiSearchAlt2 } from "react-icons/bi";
@@ -15,14 +15,9 @@ const ContactsList = () => {
   const [searchContacts, setSearchContacts] = useState([]);
   const { data, isLoading } = useGetAllUserQuery({});
 
-  if (!isLoading) {
-    // setAllContacts((data as any)?.data);
-
-    Object.entries((data as any)?.data).map(([initialLetter, userList]) => {
-      console.log("initialLetter", initialLetter);
-      console.log("userList", userList);
-    });
-  }
+  // if (!isLoading) {
+  //   setAllContacts((data as any)?.data);
+  // }
 
   useEffect(() => {
     if (searchTerm.length) {
@@ -68,27 +63,29 @@ const ContactsList = () => {
       </div>
       {!isLoading &&
         (data as any)?.data &&
-        Object.entries((data as any)?.data).map(([initialLetter, userList]) => {
-          return (
-            (userList as [])?.length > 0 && (
-              <div key={Date.now() + initialLetter}>
-                <div className="py-5 pl-10 text-teal-light">
-                  {initialLetter}
-                </div>
+        Object.entries((data as any)?.data as Record<string, any>).map(
+          ([initialLetter, userList]) => {
+            return (
+              (userList as [])?.length > 0 && (
+                <div key={Date.now() + initialLetter}>
+                  <div className="py-5 pl-10 text-teal-light">
+                    {initialLetter}
+                  </div>
 
-                {(userList as [])?.map((user: any) => {
-                  return (
-                    <ChatLIstItem
-                      key={user?.id}
-                      data={user}
-                      isContactPage={true}
-                    />
-                  );
-                })}
-              </div>
-            )
-          );
-        })}
+                  {(userList as [])?.map((user: any) => {
+                    return (
+                      <ChatLIstItem
+                        key={user?.id}
+                        data={user}
+                        isContactPage={true}
+                      />
+                    );
+                  })}
+                </div>
+              )
+            );
+          }
+        )}
     </div>
   );
 };

@@ -1,25 +1,34 @@
+"use client";
 import { useGetInitialContactsWithMessagesQuery } from "@/redux/api/messageApi";
-import { useAppSelector } from "@/redux/hook";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import ChatLIstItem from "./ChatLIstItem";
+import { setAllUsers } from "@/redux/feature/user/userSlice";
+import { useEffect } from "react";
 
 function List() {
-  const { userInfo } = useAppSelector((state) => state.user);
-  const { data } = useGetInitialContactsWithMessagesQuery(userInfo?.id);
-  const userContacts = (data as any)?.data?.users;
+  const dispatch = useAppDispatch();
+  const { userInfo, allUsers, filteredUsers } = useAppSelector(
+    (state) => state.user
+  );
+  const { data, isLoading } = useGetInitialContactsWithMessagesQuery(
+    userInfo?.id
+  );
+
+  useEffect(() => {
+    if (!isLoading) {
+      dispatch(setAllUsers((data as any)?.data?.users));
+    }
+  }, [isLoading, dispatch, data]);
 
   return (
     <div className="flex-auto max-h-full overflow-auto bg-search-input-container-background custom-scrollbar">
-      {/* {filteredContacts && filteredContacts.length > 0
-        ? filteredContacts.map((contact) => (
+      {filteredUsers && filteredUsers.length > 0
+        ? filteredUsers.map((contact: any) => (
             <ChatLIstItem data={contact} key={contact?.id} />
           ))
-        : userContacts.map((contact) => (
+        : allUsers?.map((contact: any) => (
             <ChatLIstItem data={contact} key={contact?.id} />
-          ))} */}
-
-      {userContacts?.map((contact: any) => (
-        <ChatLIstItem data={contact} key={contact?.id} />
-      ))}
+          ))}
     </div>
   );
 }
