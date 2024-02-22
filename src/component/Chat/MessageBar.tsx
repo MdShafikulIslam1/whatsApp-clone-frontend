@@ -1,9 +1,8 @@
 "use client";
-import { getBaseUrl } from "@/helpers/config/envConfig";
 import { useAddMessageMutation } from "@/redux/api/messageApi";
 import { useAppSelector } from "@/redux/hook";
-import axios from "axios";
-import { useState } from "react";
+import EmojiPicker from "emoji-picker-react";
+import { useEffect, useRef, useState } from "react";
 import { BsEmojiSmile } from "react-icons/bs";
 import { ImAttachment } from "react-icons/im";
 import { MdSend } from "react-icons/md";
@@ -14,7 +13,26 @@ const MessageBar = () => {
   );
   const [addMessage] = useAddMessageMutation();
   const [message, setMessage] = useState("");
+  const [showEmojiModal, setShowEmojiModal] = useState(false);
+  const emojiPickerRef = useRef<HTMLDivElement>(null);
 
+
+  useEffect(() => {
+    const handleOutsideClick = (event:any) => {
+      if (event.target.id !== "emoji-open") {
+        if (
+          emojiPickerRef.current &&
+          !emojiPickerRef.current?.contains(event.target)
+        ) {
+          setShowEmojiModal(false);
+        }
+      }
+    };
+    document.addEventListener("click", handleOutsideClick);
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, []);
 
   const sendMessageHandler = async () => {
     try {
@@ -32,11 +50,26 @@ const MessageBar = () => {
     <div className="relative flex items-center h-20 gap-6 px-4 bg-panel-header-background">
       <>
         <div className="flex gap-6">
-          <BsEmojiSmile
+        <BsEmojiSmile
             className="text-xl cursor-pointer text-panel-header-icon"
             title="Emoji"
             id="emoji-open"
+            onClick={() => setShowEmojiModal(!showEmojiModal)}
           />
+
+          {showEmojiModal && (
+            <div
+              className="absolute z-40 bottom-24 left-16"
+              ref={emojiPickerRef}
+            >
+              <EmojiPicker
+                onEmojiClick={(emoji) =>
+                  setMessage((preMessage) => (preMessage += emoji.emoji))
+                }
+                theme="dark"
+              />
+            </div>
+          )}
 
           <ImAttachment
             className="text-xl cursor-pointer text-panel-header-icon"
