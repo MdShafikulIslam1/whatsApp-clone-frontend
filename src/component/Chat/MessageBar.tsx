@@ -1,31 +1,63 @@
 "use client";
-import { getBaseUrl } from "@/helpers/config/envConfig";
+import { useAddMessageMutation } from "@/redux/api/messageApi";
 import { useAppSelector } from "@/redux/hook";
-import axios from "axios";
-import { useState } from "react";
+import EmojiPicker from "emoji-picker-react";
+import { useEffect, useRef, useState } from "react";
 import { BsEmojiSmile } from "react-icons/bs";
 import { ImAttachment } from "react-icons/im";
 import { MdSend } from "react-icons/md";
+import UploadPhoto from "../UploadPhoto";
+import { CldUploadButton } from "next-cloudinary";
 
 const MessageBar = () => {
   const { currentChatUserInfo, userInfo } = useAppSelector(
     (state) => state.user
   );
+  const [addMessage] = useAddMessageMutation();
   const [message, setMessage] = useState("");
+  const [showEmojiModal, setShowEmojiModal] = useState(false);
+  const emojiPickerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (event: any) => {
+      if (event.target.id !== "emoji-open") {
+        if (
+          emojiPickerRef.current &&
+          !emojiPickerRef.current?.contains(event.target)
+        ) {
+          setShowEmojiModal(false);
+        }
+      }
+    };
+    document.addEventListener("click", handleOutsideClick);
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, []);
 
   const sendMessageHandler = async () => {
     try {
-      const { data } = await axios.post(
-        `${getBaseUrl()}/messages/add-message`,
-        {
-          to: currentChatUserInfo?.id,
-          from: userInfo?.id,
-          message,
-        }
-      );
-      console.log("send message", data);
+      const data: any = await addMessage({
+        to: currentChatUserInfo?.id,
+        from: userInfo?.id,
+        message,
+        type: "text",
+      });
+
+      setMessage("");
     } catch (error) {}
   };
+
+  const handleUpload = async (result: any) => {
+    const data: any = await addMessage({
+      to: currentChatUserInfo?.id,
+      from: userInfo?.id,
+      message: result?.info?.secure_url,
+      type: "image",
+    });
+    console.log("image message sent", data);
+  };
+
   return (
     <div className="relative flex items-center h-20 gap-6 px-4 bg-panel-header-background">
       <>
@@ -34,12 +66,32 @@ const MessageBar = () => {
             className="text-xl cursor-pointer text-panel-header-icon"
             title="Emoji"
             id="emoji-open"
+            onClick={() => setShowEmojiModal(!showEmojiModal)}
           />
 
-          <ImAttachment
-            className="text-xl cursor-pointer text-panel-header-icon"
-            title="Attachment file"
-          />
+          {showEmojiModal && (
+            <div
+              className="absolute z-40 bottom-24 left-16"
+              ref={emojiPickerRef}
+            >
+              <EmojiPicker
+                onEmojiClick={(emoji) =>
+                  setMessage((preMessage) => (preMessage += emoji.emoji))
+                }
+              />
+            </div>
+          )}
+
+          <CldUploadButton
+            options={{ maxFiles: 1 }}
+            onUpload={handleUpload}
+            uploadPreset="kde3v72f"
+          >
+            <ImAttachment
+              className="text-xl cursor-pointer text-panel-header-icon"
+              title="Attachment file"
+            />
+          </CldUploadButton>
         </div>
         <div className="flex items-center w-full h-10 rounded-lg">
           <input

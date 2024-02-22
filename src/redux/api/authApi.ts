@@ -20,7 +20,19 @@ const authApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [tagTypes.USER],
     }),
+
+    getAllUser: build.query({
+      query: () => ({
+        url: "/auth/all-user",
+        method: "GET",
+      }),
+      providesTags: [tagTypes.USER],
+    }),
   }),
 });
 
-export const { useCheckUserMutation, useOnboardUserMutation } = authApi;
+export const {
+  useCheckUserMutation,
+  useOnboardUserMutation,
+  useGetAllUserQuery,
+} = authApi;

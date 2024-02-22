@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-interface IMessage {
+export interface IMessage {
   createdAt?: string;
   id?: string;
   message?: string;
@@ -12,6 +12,9 @@ interface IMessage {
   updatedAt?: string;
 }
 export interface IUser {
+  allUsers?: Array<{}>;
+  filteredUsers?: Array<{}>;
+  messageSearch: boolean;
   messages: IMessage[];
   contactPage: boolean;
   image: string;
@@ -33,6 +36,9 @@ export interface IUser {
 }
 
 const initialState: IUser = {
+  allUsers: [],
+  filteredUsers: [],
+  messageSearch: false,
   messages: [],
   contactPage: false,
   image: "/default_avatar.png",
@@ -78,8 +84,22 @@ export const userSlice = createSlice({
     ) => {
       state.currentChatUserInfo = action.payload;
     },
-    setMessage: (state, action: PayloadAction<IMessage>) => {
-      state.messages.push(action.payload);
+    setMessage: (state, action: PayloadAction<IMessage[]>) => {
+      state.messages = action.payload;
+    },
+    setMessageSearch: (state) => {
+      state.messageSearch = !state.messageSearch;
+    },
+    setAllUsers: (state, action: PayloadAction<any>) => {
+      state.allUsers = action.payload;
+    },
+    setFilteredUsers: (state, action: PayloadAction<any>) => {
+      state.filteredUsers = state.allUsers?.filter((user: any) =>
+        user?.name?.toLowerCase().includes(action.payload.toLowerCase())
+      );
+    },
+    setExitChat: (state) => {
+      state.currentChatUserInfo = null;
     },
   },
 });
@@ -92,6 +112,10 @@ export const {
   setContactPage,
   setCurrentChatUserInfo,
   setMessage,
+  setMessageSearch,
+  setAllUsers,
+  setFilteredUsers,
+  setExitChat,
 } = userSlice.actions;
 
 export default userSlice.reducer;

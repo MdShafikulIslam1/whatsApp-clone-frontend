@@ -8,8 +8,6 @@ import { useOnboardUserMutation } from "@/redux/api/authApi";
 import Avatar from "@/component/Avatar";
 import { useRouter } from "next/navigation";
 import { setNewUser, setUserInfo } from "@/redux/feature/user/userSlice";
-import { getBaseUrl } from "@/helpers/config/envConfig";
-import axios from "axios";
 
 const OnboardingPage = () => {
   const { image, userInfo } = useAppSelector((state) => state.user);
@@ -24,11 +22,7 @@ const OnboardingPage = () => {
       return router.push("/login");
     }
     try {
-      // const result: any = await onboardUser(data).unwrap();
-      const { data } = await axios.post(
-        `${getBaseUrl()}/auth/onboard-user`,
-        formData
-      );
+      const data: any = await onboardUser(formData).unwrap();
       console.log("onboarding data", data);
       if (data?.success) {
         const { id, name, about, email, profilePhoto } = data?.data!;
@@ -37,7 +31,7 @@ const OnboardingPage = () => {
         dispatch(setUserInfo({ id, name, about, email, profilePhoto }));
         router.push("/");
       }
-    } catch (error:any) {
+    } catch (error: any) {
       console.log("onboarding error: ", error?.response?.data?.success);
       message.error("Something wrong about onboarding user");
     }
