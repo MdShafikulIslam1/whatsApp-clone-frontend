@@ -2,10 +2,13 @@ import { useAppSelector } from "@/redux/hook";
 import { calculateTime } from "@/utils/CalculateTime";
 import React from "react";
 import MessageStatus from "../MessageStatus";
+import ImageMessage from "../ImageMessage";
 
 function ChatContainer() {
-  const {userInfo,currentChatUserInfo,messages} = useAppSelector(state => state.user);
-  console.log("messages inside chat container", messages)
+  const { userInfo, currentChatUserInfo, messages } = useAppSelector(
+    (state) => state.user
+  );
+  console.log("messages inside chat container", messages);
   return (
     <div className="h-[80vh] w-full flex-grow relative overflow-auto custom-scrollbar">
       <div className="fixed z-0 w-full h-full bg-fixed bg-chat-background opacity-5"></div>
@@ -47,9 +50,9 @@ function ChatContainer() {
                       </div>
                     </div>
                   )}
-                  {/* {message?.type === "image" && (
+                  {message?.type === "image" && (
                     <ImageMessage message={message} />
-                  )} */}
+                  )}
                 </div>
               );
             })}

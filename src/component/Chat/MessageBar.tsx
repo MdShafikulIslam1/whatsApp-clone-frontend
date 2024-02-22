@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from "react";
 import { BsEmojiSmile } from "react-icons/bs";
 import { ImAttachment } from "react-icons/im";
 import { MdSend } from "react-icons/md";
+import UploadPhoto from "../UploadPhoto";
+import { CldUploadButton } from "next-cloudinary";
 
 const MessageBar = () => {
   const { currentChatUserInfo, userInfo } = useAppSelector(
@@ -16,9 +18,8 @@ const MessageBar = () => {
   const [showEmojiModal, setShowEmojiModal] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
 
-
   useEffect(() => {
-    const handleOutsideClick = (event:any) => {
+    const handleOutsideClick = (event: any) => {
       if (event.target.id !== "emoji-open") {
         if (
           emojiPickerRef.current &&
@@ -40,17 +41,28 @@ const MessageBar = () => {
         to: currentChatUserInfo?.id,
         from: userInfo?.id,
         message,
+        type: "text",
       });
 
-      setMessage("")
-     
+      setMessage("");
     } catch (error) {}
   };
+
+  const handleUpload = async (result: any) => {
+    const data: any = await addMessage({
+      to: currentChatUserInfo?.id,
+      from: userInfo?.id,
+      message: result?.info?.secure_url,
+      type: "image",
+    });
+    console.log("image message sent", data);
+  };
+
   return (
     <div className="relative flex items-center h-20 gap-6 px-4 bg-panel-header-background">
       <>
         <div className="flex gap-6">
-        <BsEmojiSmile
+          <BsEmojiSmile
             className="text-xl cursor-pointer text-panel-header-icon"
             title="Emoji"
             id="emoji-open"
@@ -66,15 +78,20 @@ const MessageBar = () => {
                 onEmojiClick={(emoji) =>
                   setMessage((preMessage) => (preMessage += emoji.emoji))
                 }
-                theme="dark"
               />
             </div>
           )}
 
-          <ImAttachment
-            className="text-xl cursor-pointer text-panel-header-icon"
-            title="Attachment file"
-          />
+          <CldUploadButton
+            options={{ maxFiles: 1 }}
+            onUpload={handleUpload}
+            uploadPreset="kde3v72f"
+          >
+            <ImAttachment
+              className="text-xl cursor-pointer text-panel-header-icon"
+              title="Attachment file"
+            />
+          </CldUploadButton>
         </div>
         <div className="flex items-center w-full h-10 rounded-lg">
           <input
