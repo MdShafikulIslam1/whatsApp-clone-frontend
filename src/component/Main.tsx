@@ -10,11 +10,12 @@ import { useCheckUserMutation } from "@/redux/api/authApi";
 import { setMessage, setUserInfo } from "@/redux/feature/user/userSlice";
 import Chat from "./Chat/Chat";
 import { useGetAllMessageQuery } from "@/redux/api/messageApi";
+import SearchMessages from "./Chat/SearchMessages";
 
 const Main = () => {
   const router = useRouter();
   const [redirectToLogin, setRedirectToLogin] = useState(false);
-  const { userInfo, currentChatUserInfo } = useAppSelector(
+  const { userInfo, currentChatUserInfo,messageSearch } = useAppSelector(
     (state) => state.user
   );
   const dispatch = useAppDispatch();
@@ -65,9 +66,17 @@ const Main = () => {
 
   return (
     <>
-      <div className="grid grid-cols-main w-screen h-screen max-h-screen overflow-hidden">
+     <div className="grid w-screen h-screen max-w-full max-h-screen overflow-hidden grid-cols-main">
         <ChatList />
-        {currentChatUserInfo?.id ? <Chat /> : <Empty />}
+        {currentChatUserInfo ? (
+          <div className={messageSearch ? "grid grid-cols-2" : "grid-cols-2"}>
+            <Chat />
+
+            {messageSearch && <SearchMessages />}
+          </div>
+        ) : (
+          <Empty />
+        )}
       </div>
     </>
   );
