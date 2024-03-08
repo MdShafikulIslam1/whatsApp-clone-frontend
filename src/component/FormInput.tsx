@@ -36,7 +36,7 @@ const FormInput = ({
   // const errorMessages = getErrorMessageByPathname(errors, name);
   return (
     <>
-      {label ? <label className="text-white">{label}</label> : null}
+      {label ? <label className="text-white mb-2">{label}</label> : null}
       <Controller
         control={control}
         name={name}

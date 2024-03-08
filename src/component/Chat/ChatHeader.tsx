@@ -6,12 +6,16 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { setExitChat, setMessageSearch } from "@/redux/feature/user/userSlice";
 import ContextMenu from "../ContextMenu";
+import { useSocketContext } from "@/socket/socket";
+import { getUserInfo } from "@/service/authentication.service";
 
 const ChatHeader = () => {
   const currentChatUserInfo = useAppSelector(
     (state) => state.user.currentChatUserInfo
   );
+  const { onlineUsers } = useSocketContext();
   const dispatch = useAppDispatch();
+  const userInfo: any = getUserInfo();
 
   const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
   const [contextMenuCoordinates, setContextMenuCoordinates] = useState({
@@ -33,6 +37,9 @@ const ChatHeader = () => {
       },
     },
   ];
+
+  const isActiveUser = onlineUsers.includes(currentChatUserInfo?.id as string);
+
   return (
     <div className="z-10 flex items-center justify-between h-16 px-4 py-3 bg-panel-header-background">
       <div className="flex items-center justify-center gap-6">
@@ -41,7 +48,9 @@ const ChatHeader = () => {
           <span className="text-primary-strong">
             {currentChatUserInfo?.name}
           </span>
-          <span className="text-sm text-secondary">offline/online</span>
+          <span className="text-sm text-secondary">
+            {isActiveUser ? "online" : "offline"}
+          </span>
         </div>
       </div>
       <div className="flex gap-6">

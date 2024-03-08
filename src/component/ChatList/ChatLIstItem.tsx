@@ -10,14 +10,12 @@ import {
 } from "@/redux/feature/user/userSlice";
 import { calculateTime } from "@/utils/CalculateTime";
 import MessageStatus from "../MessageStatus";
+import { getUserInfo } from "@/service/authentication.service";
 
 function ChatLIstItem({ data, isContactPage = false }: any) {
-  console.log("chat list item", data);
-  const { currentChatUserInfo, userInfo } = useAppSelector(
-    (state) => state?.user
-  );
+  const { currentChatUserInfo } = useAppSelector((state) => state?.user);
   const dispatch = useAppDispatch();
-
+  const userInfo: any = getUserInfo();
   const handleContactClick = () => {
     if (!isContactPage) {
       dispatch(
@@ -26,8 +24,7 @@ function ChatLIstItem({ data, isContactPage = false }: any) {
           about: data.about,
           email: data.email,
           profilePhoto: data.profilePhoto,
-          id:
-            userInfo?.id === data?.senderId ? data?.receiverId : data?.senderId,
+          id: userInfo?.id === data?.id ? null : data.id,
         })
       );
     } else {

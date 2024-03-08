@@ -6,9 +6,13 @@ import Avatar from "../Avatar";
 import ContextMenu from "../ContextMenu";
 import { useRouter } from "next/navigation";
 import { setContactPage } from "@/redux/feature/user/userSlice";
+import { getUserInfo } from "@/service/authentication.service";
+import { useGetSingleUserQuery } from "@/redux/api/authApi";
 function ChatListHeader() {
-  const {userInfo,contactPage} = useAppSelector((state) => state.user);
-  console.log("contact",contactPage);
+  const { contactPage } = useAppSelector((state) => state.user);
+  const userInfo = getUserInfo();
+  const { data } = useGetSingleUserQuery((userInfo as any)?.id as string);
+  console.log("signle user info: ",);
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -37,7 +41,7 @@ function ChatListHeader() {
   return (
     <div className="flex items-center justify-between h-16 px-3 py-3">
       <div className="cursor-pointer">
-        <Avatar type={"sm"} image={userInfo?.profilePhoto} />
+        <Avatar type={"sm"} image={(data as any)?.data?.profilePhoto} />
       </div>
       <div className="flex gap-6 ">
         <BsFillChatLeftTextFill
