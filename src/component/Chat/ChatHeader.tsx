@@ -15,7 +15,6 @@ const ChatHeader = () => {
   );
   const { onlineUsers } = useSocketContext();
   const dispatch = useAppDispatch();
-  const userInfo: any = getUserInfo();
 
   const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
   const [contextMenuCoordinates, setContextMenuCoordinates] = useState({

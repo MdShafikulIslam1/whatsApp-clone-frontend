@@ -12,22 +12,23 @@ import { getUserInfo } from "@/service/authentication.service";
 import { useSocketContext } from "@/socket/socket";
 
 const Main = () => {
-  const { currentChatUserInfo, messages, messageSearch } = useAppSelector(
+  const { currentChatUserInfo, messageSearch } = useAppSelector(
     (state) => state.user
   );
-  console.log("currentChatUserInfo in Main", currentChatUserInfo)
   return (
     <>
-      <div className="grid w-screen h-screen max-w-full max-h-screen overflow-hidden grid-cols-main">
+      <div className="grid w-screen h-screen max-w-full max-h-screen overflow-hidden grid-cols-1 md:grid-cols-main">
         <ChatList />
-        {currentChatUserInfo ? (
-          <div className={messageSearch ? "grid grid-cols-2" : "grid-cols-2"}>
-            <Chat />
-            {messageSearch && <SearchMessages />}
-          </div>
-        ) : (
-          <Empty />
-        )}
+        <div>
+          {currentChatUserInfo ? (
+            <div className={messageSearch ? "grid grid-cols-2" : "grid-cols-2"}>
+              <Chat />
+              {messageSearch && <SearchMessages />}
+            </div>
+          ) : (
+            <Empty />
+          )}
+        </div>
       </div>
     </>
   );

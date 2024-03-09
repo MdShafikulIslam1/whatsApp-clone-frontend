@@ -5,12 +5,13 @@ import { useLoginMutation } from "@/redux/api/authApi";
 import { useAppDispatch } from "@/redux/hook";
 import { storeUserInfo } from "@/service/authentication.service";
 import { UserOutlined } from "@ant-design/icons";
-import { Button, message } from "antd";
+import { Button, Divider, message } from "antd";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { SubmitHandler } from "react-hook-form";
+import whatsAppLogo from "../../../public/whatsapp.gif";
+import Link from "next/link";
 
 type IFormValues = {
   email: string;
@@ -34,10 +35,12 @@ const LoginPage = () => {
     }
   };
   return (
-    <div className="flex  items-center justify-center w-screen h-screen gap-40 bg-panel-header-background ">
+    <div className="flex flex-col md:flex-row items-center justify-center w-screen h-screen gap-20 bg-panel-header-background ">
       <div className="flex flex-col items-center justify-center gap-2 text-white">
-        <Image src={"/whatsapp.gif"} alt="whatsapp" height={300} width={300} />
-        <span className="text-5xl">Whatsapp</span>
+        <div className="w-[200px]">
+          <Image src={whatsAppLogo} alt="whatsapp" objectFit="contain" />
+        </div>
+        <span className="text-5xl tracking-widest">WhatsApp</span>
       </div>
 
       <div>
@@ -71,6 +74,8 @@ const LoginPage = () => {
                 />
               </div>
 
+              {/* 
+              //TODO: FORGET PASSWORD
               <div className="flex justify-end mb-2">
                 <Link
                   href={"/forgot-password"}
@@ -78,16 +83,20 @@ const LoginPage = () => {
                 >
                   Forgot Password ?
                 </Link>
-              </div>
+              </div> */}
               <Button
-                className="bg-orange-600"
+                className="bg-[#07E676]"
                 block
-                type="primary"
+                type="dashed"
                 htmlType="submit"
               >
                 Login
               </Button>
             </Form>
+          </div>
+          <div className="text-white flex mt-5 text-sm font-thin gap-1">
+            <p className="">Are you new here?</p>
+            <Link href={"/onboarding"} className="text-blue-300">Create an account</Link>
           </div>
         </div>
       </div>

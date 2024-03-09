@@ -12,7 +12,6 @@ function ChatListHeader() {
   const { contactPage } = useAppSelector((state) => state.user);
   const userInfo = getUserInfo();
   const { data } = useGetSingleUserQuery((userInfo as any)?.id as string);
-  console.log("signle user info: ",);
   const dispatch = useAppDispatch();
   const router = useRouter();
 

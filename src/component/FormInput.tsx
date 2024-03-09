@@ -36,7 +36,11 @@ const FormInput = ({
   // const errorMessages = getErrorMessageByPathname(errors, name);
   return (
     <>
-      {label ? <label className="text-white mb-2">{label}</label> : null}
+      {label ? (
+        <p className="text-white mb-2">
+          {label} {required && <span className="text-[#07E676]">*</span>}{" "}
+        </p>
+      ) : null}
       <Controller
         control={control}
         name={name}
@@ -54,7 +58,7 @@ const FormInput = ({
             />
           ) : (
             <Input
-            required={required}
+              required={required}
               type={type}
               size={size}
               {...field}
@@ -62,8 +66,6 @@ const FormInput = ({
               prefix={prefix}
               placeholder={placeHolder}
               allowClear={allowClear}
-            style={{marginTop:"8px",color:"white",fontWeight:"lighter",background:"black"}}
-           
             />
           )
         }
