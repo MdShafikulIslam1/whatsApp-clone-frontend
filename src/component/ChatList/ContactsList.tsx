@@ -2,7 +2,6 @@
 import { getBaseUrl } from "@/helpers/config/envConfig";
 import { setAllUsers, setContactPage } from "@/redux/feature/user/userSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BiArrowBack, BiSearchAlt2 } from "react-icons/bi";
 import ChatLIstItem from "./ChatLIstItem";

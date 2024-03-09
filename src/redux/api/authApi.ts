@@ -3,24 +3,30 @@ import baseApi from "./baseApi";
 
 const authApi = baseApi.injectEndpoints({
   endpoints: (build: any) => ({
-    checkUser: build.mutation({
-      query: (email: any) => ({
-        url: "/auth/check-user",
+    createAccount: build.mutation({
+      query: (user: any) => ({
+        url: "/auth/create-account",
         method: "POST",
-        data: email,
+        data: user,
+      }),
+      invalidatesTags: [tagTypes.USER],
+    }),
+    login: build.mutation({
+      query: (user: any) => ({
+        url: "/auth/login",
+        method: "POST",
+        data: user,
       }),
       invalidatesTags: [tagTypes.USER],
     }),
 
-    onboardUser: build.mutation({
-      query: (payload: any) => ({
-        url: "/auth/onboard-user",
-        method: "POST",
-        data: payload,
+    getSingleUser: build.query({
+      query: (id: string) => ({
+        url: `/auth/${id}`,
+        method: "GET",
       }),
-      invalidatesTags: [tagTypes.USER],
+      providesTags: [tagTypes.USER],
     }),
-
     getAllUser: build.query({
       query: () => ({
         url: "/auth/all-user",
@@ -32,7 +38,8 @@ const authApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useCheckUserMutation,
-  useOnboardUserMutation,
+  useCreateAccountMutation,
+  useLoginMutation,
   useGetAllUserQuery,
+  useGetSingleUserQuery,
 } = authApi;

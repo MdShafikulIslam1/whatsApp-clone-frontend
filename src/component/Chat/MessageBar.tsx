@@ -1,6 +1,6 @@
 "use client";
 import { useAddMessageMutation } from "@/redux/api/messageApi";
-import { useAppSelector } from "@/redux/hook";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import EmojiPicker from "emoji-picker-react";
 import { useEffect, useRef, useState } from "react";
 import { BsEmojiSmile } from "react-icons/bs";
@@ -8,15 +8,19 @@ import { ImAttachment } from "react-icons/im";
 import { MdSend } from "react-icons/md";
 import UploadPhoto from "../UploadPhoto";
 import { CldUploadButton } from "next-cloudinary";
+import { Socket, io } from "socket.io-client";
+import { setSocketMessage } from "@/redux/feature/user/userSlice";
+import { getUserInfo } from "@/service/authentication.service";
 
 const MessageBar = () => {
-  const { currentChatUserInfo, userInfo } = useAppSelector(
-    (state) => state.user
-  );
+  const { currentChatUserInfo } = useAppSelector((state) => state.user);
+  const userInfo: any = getUserInfo();
+  const dispatch = useAppDispatch();
   const [addMessage] = useAddMessageMutation();
   const [message, setMessage] = useState("");
   const [showEmojiModal, setShowEmojiModal] = useState(false);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
+  const socketRef = useRef<Socket>();
 
   useEffect(() => {
     const handleOutsideClick = (event: any) => {
@@ -36,16 +40,18 @@ const MessageBar = () => {
   }, []);
 
   const sendMessageHandler = async () => {
+    const messageData = {
+      to: currentChatUserInfo?.id,
+      from: userInfo?.id,
+      message,
+      type: "text",
+    };
     try {
-      const data: any = await addMessage({
-        to: currentChatUserInfo?.id,
-        from: userInfo?.id,
-        message,
-        type: "text",
-      });
-
+      const data: any = await addMessage(messageData).unwrap();
       setMessage("");
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
   };
 
   const handleUpload = async (result: any) => {
@@ -55,7 +61,6 @@ const MessageBar = () => {
       message: result?.info?.secure_url,
       type: "image",
     });
-    console.log("image message sent", data);
   };
 
   return (

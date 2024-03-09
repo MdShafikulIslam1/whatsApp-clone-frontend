@@ -101,6 +101,10 @@ export const userSlice = createSlice({
     setExitChat: (state) => {
       state.currentChatUserInfo = null;
     },
+    setSocketMessage: (state, action: PayloadAction<any>) => {
+      state.messages = [...state.messages, action.payload];
+      console.log("total Messages", state.messages);
+    },
   },
 });
 
@@ -116,6 +120,7 @@ export const {
   setAllUsers,
   setFilteredUsers,
   setExitChat,
+  setSocketMessage,
 } = userSlice.actions;
 
 export default userSlice.reducer;

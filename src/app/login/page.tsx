@@ -1,65 +1,105 @@
 "use client";
-import { useCheckUserMutation } from "@/redux/api/authApi";
-import { setNewUser, setUserInfo } from "@/redux/feature/user/userSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { firebaseAuth } from "@/utils/firebaseConfig";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import Form from "@/component/Form";
+import FormInput from "@/component/FormInput";
+import { useLoginMutation } from "@/redux/api/authApi";
+import { useAppDispatch } from "@/redux/hook";
+import { storeUserInfo } from "@/service/authentication.service";
+import { UserOutlined } from "@ant-design/icons";
+import { Button, Divider, message } from "antd";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FcGoogle } from "react-icons/fc";
+import { SubmitHandler } from "react-hook-form";
+import whatsAppLogo from "../../../public/whatsapp.gif";
+import Link from "next/link";
 
+type IFormValues = {
+  email: string;
+  password: string;
+};
 const LoginPage = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [checkUser] = useCheckUserMutation();
-  const handleLogin = async () => {
-    setIsLoading(true);
-    const googleProvider = new GoogleAuthProvider();
-    const { user } = await signInWithPopup(firebaseAuth, googleProvider);
-
-    if (user) {
-      const { displayName: name, email, photoURL: profilePhoto } = user;
-      try {
-        const data: any = await checkUser({ email }).unwrap();
-        console.log("check user data", data);
-        if (data?.success) {
-          const { id, name, about, email, profilePhoto } = data?.data!;
-          dispatch(setUserInfo({ id, name, about, email, profilePhoto }));
-          router.push("/");
-        }
-      } catch (error: any) {
-        console.log("check user error", error);
-        if (!error?.response?.data?.success) {
-          console.log("object not found", error)
-          dispatch(setNewUser(true));
-          dispatch(
-            setUserInfo({
-              name: name,
-              email,
-              profilePhoto,
-              about: "",
-            })
-          );
-          router.push("/onboarding");
-        }
+  const [login] = useLoginMutation();
+  const onSubmit: SubmitHandler<IFormValues> = async (data: any) => {
+    try {
+      const res: any = await login({ ...data }).unwrap();
+      if (res?.data) {
+        storeUserInfo({ accessToken: res?.data });
+        message.success(res.message);
+        router.push("/");
       }
+    } catch (error: any) {
+      message.error(error.message);
     }
   };
   return (
-    <div className="flex flex-col items-center justify-center w-screen h-screen gap-6 bg-panel-header-background">
-      <div className="flex items-center justify-center gap-2 text-white">
-        <Image src={"/whatsapp.gif"} alt="whatsapp" height={300} width={300} />
-        <span className="text-7xl">Whatsapp</span>
+    <div className="flex flex-col md:flex-row items-center justify-center w-screen h-screen gap-20 bg-panel-header-background ">
+      <div className="flex flex-col items-center justify-center gap-2 text-white">
+        <div className="w-[200px]">
+          <Image src={whatsAppLogo} alt="whatsapp" objectFit="contain" />
+        </div>
+        <span className="text-5xl tracking-widest">WhatsApp</span>
       </div>
-      <button
-        onClick={handleLogin}
-        className="flex items-center justify-center p-5 rounded-lg gap-7 bg-search-input-container-background"
-      >
-        <FcGoogle className="text-4xl" />
-        <span className="text-2xl text-white">Login with google</span>
-      </button>
+
+      <div>
+        <div>
+          <h1 className="text-white text-2xl font-bold my-4 text-center ">
+            Sign in your account
+          </h1>
+          <div>
+            <Form submitHandler={onSubmit}>
+              <div>
+                <FormInput
+                  required={true}
+                  name="email"
+                  type="email"
+                  label="Email"
+                  size="large"
+                  placeHolder="Enter your Email"
+                  prefix=<UserOutlined />
+                  allowClear={true}
+                />
+              </div>
+
+              <div className="my-3">
+                <FormInput
+                  required={true}
+                  name="password"
+                  type="password"
+                  label="Password"
+                  placeHolder="Enter Correct Password"
+                  size="large"
+                />
+              </div>
+
+              {/* 
+              //TODO: FORGET PASSWORD
+              <div className="flex justify-end mb-2">
+                <Link
+                  href={"/forgot-password"}
+                  className="underline text-white text-end cursor-pointer"
+                >
+                  Forgot Password ?
+                </Link>
+              </div> */}
+              <Button
+                className="bg-[#07E676]"
+                block
+                type="dashed"
+                htmlType="submit"
+              >
+                Login
+              </Button>
+            </Form>
+          </div>
+          <div className="text-white flex mt-5 text-sm font-thin gap-1">
+            <p className="">Are you new here?</p>
+            <Link href={"/onboarding"} className="text-blue-300">Create an account</Link>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

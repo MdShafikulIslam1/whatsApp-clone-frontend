@@ -4,12 +4,13 @@ import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import ChatLIstItem from "./ChatLIstItem";
 import { setAllUsers } from "@/redux/feature/user/userSlice";
 import { useEffect } from "react";
+import { getUserInfo } from "@/service/authentication.service";
 
 function List() {
   const dispatch = useAppDispatch();
-  const { userInfo, allUsers, filteredUsers } = useAppSelector(
-    (state) => state.user
-  );
+  const { allUsers, filteredUsers } = useAppSelector((state) => state.user);
+
+  const userInfo: any = getUserInfo();
   const { data, isLoading } = useGetInitialContactsWithMessagesQuery(
     userInfo?.id
   );

@@ -1,21 +1,58 @@
-import { useAppSelector } from "@/redux/hook";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { calculateTime } from "@/utils/CalculateTime";
-import React from "react";
+import { useGetAllMessageQuery } from "@/redux/api/messageApi";
+import { getUserInfo } from "@/service/authentication.service";
+import { useSocketContext } from "@/socket/socket";
 import MessageStatus from "../MessageStatus";
 import ImageMessage from "../ImageMessage";
+import { IMessage, setMessage } from "@/redux/feature/user/userSlice";
 
 function ChatContainer() {
-  const { userInfo, currentChatUserInfo, messages } = useAppSelector(
+  const { currentChatUserInfo, messages } = useAppSelector(
     (state) => state.user
   );
-  console.log("messages inside chat container", messages);
+  const dispatch = useAppDispatch();
+  const [allMessages, setAllMessages] = useState<IMessage[]>([]);
+  const { socket } = useSocketContext();
+  const userInfo: any = getUserInfo();
+  const { data, isSuccess } = useGetAllMessageQuery({
+    from: userInfo?.id,
+    to: currentChatUserInfo?.id,
+  });
+
+  useEffect(() => {
+    if (isSuccess && (data as any)?.data?.length > 0) {
+      setAllMessages((data as any)?.data);
+      dispatch(setMessage((data as any)?.data as []));
+    }
+  }, [data, isSuccess]);
+
+  useEffect(() => {
+    socket?.on("new_message", (new_message) => {
+      setAllMessages([...allMessages, new_message]);
+    });
+
+    return () => {
+      socket?.off("new_message");
+    };
+  }, [socket, allMessages]);
+
+  let uniqueMessages = Array.from(
+    new Set(allMessages.map((message: any) => message.id))
+  ).map((id) => {
+    return allMessages.find((message: any) => message.id === id);
+  });
+
   return (
     <div className="h-[80vh] w-full flex-grow relative overflow-auto custom-scrollbar">
       <div className="fixed z-0 w-full h-full bg-fixed bg-chat-background opacity-5"></div>
       <div className="relative bottom-0 left-0 z-40 mx-10 my-6">
         <div className="flex w-full">
           <div className="flex flex-col justify-start w-full gap-1 overflow-auto">
-            {messages?.map((message, index) => {
+            {uniqueMessages?.map((message: any, index: number) => {
               return (
                 <div
                   key={index}
