@@ -39,7 +39,7 @@ export const SocketContextProvider = ({
   useEffect(() => {
     const connectSocket = () => {
       if (userInfo) {
-        const newSocket: Socket = io("http://localhost:5000", {
+        const newSocket: Socket = io("https://whats-app-server.vercel.app", {
           query: {
             userId: userInfo?.id,
           },
