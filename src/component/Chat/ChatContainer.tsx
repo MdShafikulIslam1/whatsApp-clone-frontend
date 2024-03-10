@@ -11,9 +11,7 @@ import ImageMessage from "../ImageMessage";
 import { IMessage, setMessage } from "@/redux/feature/user/userSlice";
 
 function ChatContainer() {
-  const { currentChatUserInfo, messages } = useAppSelector(
-    (state) => state.user
-  );
+  const { currentChatUserInfo } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
   const [allMessages, setAllMessages] = useState<IMessage[]>([]);
   const { socket } = useSocketContext();
@@ -32,6 +30,7 @@ function ChatContainer() {
 
   useEffect(() => {
     socket?.on("new_message", (new_message) => {
+      console.log("new message", new_message);
       setAllMessages([...allMessages, new_message]);
     });
 
@@ -45,7 +44,8 @@ function ChatContainer() {
   ).map((id) => {
     return allMessages.find((message: any) => message.id === id);
   });
-
+console.log("all messages", allMessages)
+console.log("all messages",uniqueMessages)
   return (
     <div className="h-[80vh] w-full flex-grow relative overflow-auto custom-scrollbar">
       <div className="fixed z-0 w-full h-full bg-fixed bg-chat-background opacity-5"></div>

@@ -6,8 +6,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { setExitChat, setMessageSearch } from "@/redux/feature/user/userSlice";
 import ContextMenu from "../ContextMenu";
-import { useSocketContext } from "@/socket/socket";
-import { getUserInfo } from "@/service/authentication.service";
+import { useSocketContext } from "@/socket/socket"
 
 const ChatHeader = () => {
   const currentChatUserInfo = useAppSelector(
