@@ -1,12 +1,11 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { setImage } from "@/redux/feature/user/userSlice";
+import { useAppDispatch } from "@/redux/hook";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 import { FaCamera } from "react-icons/fa";
 import ContextMenu from "./ContextMenu";
-import Image from "next/image";
 import PhotoLibrary from "./PhotoLibrary";
-import { useAppDispatch } from "@/redux/hook";
-import { setImage } from "@/redux/feature/user/userSlice";
-import { CldUploadButton } from "next-cloudinary";
 import UploadPhoto from "./UploadPhoto";
 
 function Avatar({ type, image }: any) {
@@ -123,7 +122,7 @@ function Avatar({ type, image }: any) {
         />
       )}
 
-      {graphPhoto && <UploadPhoto  setGraphPhoto={setGraphPhoto}/>}
+      {graphPhoto && <UploadPhoto setGraphPhoto={setGraphPhoto} />}
     </>
   );
 }
