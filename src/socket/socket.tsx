@@ -1,16 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import { useAppSelector } from "@/redux/hook";
 import { getUserInfo } from "@/service/authentication.service";
 import {
   createContext,
-  useState,
-  useEffect,
-  useContext,
   ReactNode,
+  useContext,
+  useEffect,
+  useState,
 } from "react";
-import { Socket } from "socket.io-client";
-import io from "socket.io-client";
+import io, { Socket } from "socket.io-client";
 
 interface SocketContextProps {
   socket: Socket | null;
@@ -31,7 +29,6 @@ export const SocketContextProvider = ({
 }: {
   children: ReactNode;
 }) => {
-  const [isActiveUser, setIsActiveUser] = useState(false);
   const [socket, setSocket] = useState<Socket | null>(null);
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
   const userInfo: any = getUserInfo();
